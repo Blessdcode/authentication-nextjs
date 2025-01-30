@@ -10,7 +10,6 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,6 +24,7 @@ const SignUp = () => {
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
       fullName: "",
+      email:"",
       userName: "",
       password: "",
       confirmPassword: "",
@@ -32,12 +32,12 @@ const SignUp = () => {
   });
 
   return (
-    <CardWrapper headerLabel="Create an account">
+    <CardWrapper headerLabel="Create an account" buttonLabel="Have an account already" buttonLabelLink="/auth/login">
       <Form {...form}>
-        <div className="space-y-5 my-3">
+        <div className="space-y-5 my-4">
           <FormField
             control={form.control}
-            name="fullNmae"
+            name="fullName"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fullname</FormLabel>
@@ -119,7 +119,7 @@ const SignUp = () => {
               </FormItem>
             )}></FormField>
         </div>
-        <Button type="submit" className="w-full">Sign Up</Button>
+        <Button type="submit" className="w-full  hover:bg-lightBlue">Sign Up</Button>
       </Form>
     </CardWrapper>
   );
