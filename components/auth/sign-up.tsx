@@ -1,11 +1,128 @@
-import React from 'react'
+"use client";
+
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+// import { SignUpSchema } from "@/schema/signUpSchema";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+
+import { CardWrapper } from "./cardWrapper";
+import { SignUpSchema } from "@/schema";
 
 const SignUp = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const form = useForm({
+    resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      fullName: "",
+      userName: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-export default SignUp
+  return (
+    <CardWrapper headerLabel="Create an account">
+      <Form {...form}>
+        <div className="space-y-5 my-3">
+          <FormField
+            control={form.control}
+            name="fullNmae"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fullname</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    // disabled={isPending}
+                    placeholder="John Deo"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}></FormField>
+          <FormField
+            control={form.control}
+            name="userName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>UseName</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    // disabled={isPending}
+                    placeholder="Deo"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}></FormField>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    // disabled={isPending}
+                    placeholder="johndeo@gmail.com"
+                    type="email"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}></FormField>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    // disabled={isPending}
+                    placeholder="******"
+                    type="password"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}></FormField>
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ConfirmPassword</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    // disabled={isPending}
+                    placeholder="******"
+                    type="password"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}></FormField>
+        </div>
+        <Button type="submit" className="w-full">Sign Up</Button>
+      </Form>
+    </CardWrapper>
+  );
+};
+
+export default SignUp;
