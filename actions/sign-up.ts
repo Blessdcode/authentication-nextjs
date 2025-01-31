@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import * as z from "zod";
 import { getUserEmail } from "@/lib/data/getUser";
 import { generateVerification } from "@/utils/getToken";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const signup = async (fields: z.infer<typeof SignUpSchema>) => {
   const validatedFields = SignUpSchema.parse(fields);
@@ -28,5 +29,7 @@ export const signup = async (fields: z.infer<typeof SignUpSchema>) => {
   });
   console.log(createUser, "user created successfully");
 
-  await generateVerification(email);
+  const { token } = await generateVerification(email); 
+  await sendVerificationEmail(email, token)
+  console.log(token, "token")
 };

@@ -3,6 +3,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,7 +19,8 @@ model User {
   email         String?   @unique
   password      String?
   emailVerified DateTime?
-  role          String    @default("USER")
+  role          UserRole  @default(USER)
+  image                 String?
   accounts      Account[]
   sessions      Session[]
 
@@ -56,10 +62,10 @@ model Session {
 }
 
 model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  token      String
-  expires    DateTime
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String
+  token   String
+  expires DateTime
 
   @@unique([email, token])
 }

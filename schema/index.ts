@@ -5,12 +5,12 @@ const USER = "user";
 
 export const SchemaSettings = z
   .object({
-    fullName: z.optional(z.string()),
-    userName: z.optional(z.string()),
-    email: z.optional(z.string()),
-    password: z.optional(z.string().min(6)),
-    confirmPassword: z.optional(z.string().min(6)),
-    newPassword: z.optional(z.string().min(6)),
+    fullName: z.optional(z.string().trim()),
+    userName: z.optional(z.string().trim()),
+    email: z.optional(z.string().trim()),
+    password: z.optional(z.string().min(6).trim()),
+    confirmPassword: z.optional(z.string().min(6).trim()),
+    newPassword: z.optional(z.string().min(6).trim()),
     role: z.enum([ADMIN, USER]),
     isTwoFactorEnabled: z.optional(z.boolean()),
   })
