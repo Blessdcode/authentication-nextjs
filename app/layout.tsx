@@ -6,8 +6,8 @@ const PTSans = PT_Sans({ subsets: ["latin"], display: "swap", weight: ["400"] })
 
 
 export const metadata: Metadata = {
-  title: "auth-app",
-  description: "Auth base app",
+  title: "dropsaas",
+  description: "Auth base app for DropSaas application",
 };
 
 export default function RootLayout({

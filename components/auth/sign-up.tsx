@@ -140,6 +140,9 @@ const SignUp = () => {
             Sign Up
           </Button>
         </form>
+        <Button className="my-4 w-full bg-lightBlue hover:bg-darkBlue" >
+          Continue with Goggle{" "}
+        </Button>
       </Form>
     </CardWrapper>
   );
