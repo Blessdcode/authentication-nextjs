@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./lib/prisma";
 import authConfig from "./auth.config";
@@ -6,6 +6,19 @@ import { getUserID } from "./lib/data/getUser";
 import { UserRole } from "@prisma/client";
 
 
+
+declare module "next-auth" {
+  interface User {
+    role?: UserRole;
+  }
+
+  interface Session {
+    user?: User & {
+      id?: string;
+      role?: UserRole;
+    };
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
@@ -25,21 +38,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    // async session({ token, session }) {
-    //   if (token.sub && session.user) {
-    //     session.user.id = token.sub;
-    //     console.log({ sessionToken: token });
-    //   }
-    //   if (token.role && session.user) {
-    //     session.user.role = token.role as UserRole;
-    //   }
+    async session({ token, session }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+        console.log({ sessionToken: token });
+      }
+      if (token.role && session.user) {
+        session.user.role = token.role as UserRole;
+      }
 
-    //   if (session.user) {
-    //     session.user.name = token.name;
-    //     session.user.email = token.email as string;
-    //   }
-    //   return session;
-    // },
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
     },
     pages: {
       signIn:"/auth/login"
