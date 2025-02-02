@@ -18,31 +18,45 @@ import {
 
 import { CardWrapper } from "./cardWrapper";
 import { SignUpSchema } from "@/schema";
+import { signup } from "@/actions/sign-up";
+import { FormError } from "../custom/form-error";
+import { FormSuccess } from "../custom/form-success";
+import { signIn } from "next-auth/react";
 
 type IFormSubmit = {
-  fullName: string
-  email: string
-  userName: string
-  password: string
-  confirmPassword: string
+  fullName: string;
+  email: string;
+  userName: string;
+  password: string;
+  confirmPassword: string;
 };
 
 const SignUp = () => {
-  const form = useForm({
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
+  const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
       fullName: "",
-      email:"",
+      email: "",
       userName: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onSubmit = (values:IFormSubmit)=>{
-    console.log(values, "values")
-    
-  }
+  const onSubmit = async (values: IFormSubmit) => {
+    setError("");
+    setSuccess("");
+    const results = await signup(values);
+    if (results.error) {
+      setError(results.error);
+    } else {
+      setSuccess(results.success);
+      form.reset();
+    }
+    console.log(results, "user data");
+  };
 
   return (
     <CardWrapper
@@ -136,12 +150,16 @@ const SignUp = () => {
                 </FormItem>
               )}></FormField>
           </div>
+          <FormError message={error} />
+          <FormSuccess message={success} />
           <Button type="submit" className="w-full  hover:bg-lightBlue">
             Sign Up
           </Button>
         </form>
-        <Button className="my-4 w-full bg-lightBlue hover:bg-darkBlue" >
-          Continue with Goggle{" "}
+        <Button
+          onClick={() => signIn("google")}
+          className="my-4 w-full bg-lightBlue hover:bg-darkBlue">
+          Continue with Google{" "}
         </Button>
       </Form>
     </CardWrapper>

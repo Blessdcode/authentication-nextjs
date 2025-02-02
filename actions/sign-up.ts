@@ -9,27 +9,38 @@ import { generateVerification } from "@/utils/getToken";
 import { sendVerificationEmail } from "@/lib/mail";
 
 export const signup = async (fields: z.infer<typeof SignUpSchema>) => {
-  const validatedFields = SignUpSchema.parse(fields);
-  if (!validatedFields) throw new Error("Invalid fields");
+  try {
+    const validatedFields = SignUpSchema.parse(fields);
+    if (!validatedFields) throw new Error("Invalid fields");
 
-  const { fullName, userName, password, email } = validatedFields;
+    const { fullName, userName, password, email } = validatedFields;
 
-  const existingEmail = await getUserEmail(email);
-  const hashPassword = await bcrypt.hash(password, 10);
-  if (existingEmail) {
-    throw new Error("Email already in use!");
+    const existingEmail = await getUserEmail(email);
+    const hashPassword = await bcrypt.hash(password, 10);
+    if (existingEmail) {
+      throw new Error("Email already in use!");
+    }
+    const createUser = await prisma.user.create({
+      data: {
+        fullName,
+        userName,
+        email,
+        password: hashPassword,
+      },
+    });
+    console.log(createUser, "user created successfully");
+
+    const { token } = await generateVerification(email);
+    await sendVerificationEmail(email, token);
+
+    console.log(token, "token");
+    return {
+      success: "User created successfully. Please login to verify your email!",
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message || "Something went wrong" };
+    }
+    return { error: "Something went wrong" };
   }
-  const createUser = await prisma.user.create({
-    data: {
-      fullName,
-      userName,
-      email,
-      password: hashPassword,
-    },
-  });
-  console.log(createUser, "user created successfully");
-
-  const { token } = await generateVerification(email); 
-  await sendVerificationEmail(email, token)
-  console.log(token, "token")
 };

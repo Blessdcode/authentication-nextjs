@@ -69,8 +69,11 @@ export const SignUpSchema = z.object({
   }),
   confirmPassword: z.string().min(6, {
     message: "Password must match",
-  }),
-});
+  })
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords must match",
+  path: ["confirmPassword"],
+})
 
 export const LoginSchema = z.object({
   email: z.string().email({

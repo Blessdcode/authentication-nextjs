@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { PT_Sans } from "next/font/google";
+import {  Saira_Condensed } from "next/font/google";
 import "./globals.css";
 
-const PTSans = PT_Sans({ subsets: ["latin"], display: "swap", weight: ["400"] });
+const Saira = Saira_Condensed({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400"],
+});
 
 
 export const metadata: Metadata = {
@@ -17,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${PTSans.className}`}>{children}</body>
+      <body className={`${Saira.className}`}>{children}</body>
     </html>
   );
 }
