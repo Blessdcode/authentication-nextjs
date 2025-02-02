@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+// import * as z from "zod";
 // import { SignUpSchema } from "@/schema/signUpSchema";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -17,16 +17,40 @@ import {
 } from "../ui/form";
 
 import { CardWrapper } from "./cardWrapper";
-import { SignUpSchema } from "@/schema";
+import { LoginSchema } from "@/schema";
+import { login } from "@/actions/login";
+// import { signIn } from "@/auth";
+import { FormError } from "../custom/form-error";
+import { signIn } from "next-auth/react";
 
 const Login = () => {
+  // const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("");
+
   const form = useForm({
-    resolver: zodResolver(SignUpSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  const onSubmit = async (data: { email: string; password: string }) => {
+    setError("");
+    const response = await login(data);
+
+    if (response.error) {
+      setError(response.error);
+    } else {
+      await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: true,
+        callbackUrl: "/dashboard",
+      });
+    }
+    console.log("data", response)
+  };
 
   return (
     <CardWrapper
@@ -34,45 +58,48 @@ const Login = () => {
       buttonLabel="Don't have an account"
       buttonLabelLink="/auth/sign-up">
       <Form {...form}>
-        <div className="space-y-5 my-4">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    // disabled={isPending}
-                    placeholder="johndeo@gmail.com"
-                    type="email"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}></FormField>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    // disabled={isPending}
-                    placeholder="******"
-                    type="password"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}></FormField>
-        </div>
-        <Button type="submit" className="w-full  hover:bg-lightBlue">
-          Sign Up
-        </Button>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="space-y-5 my-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      // disabled={isPending}
+                      placeholder="johndeo@gmail.com"
+                      type="email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}></FormField>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      // disabled={isPending}
+                      placeholder="******"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}></FormField>
+          </div>
+          <FormError message={error} />
+          <Button type="submit" className="w-full  hover:bg-lightBlue">
+            Login
+          </Button>
+        </form>
       </Form>
     </CardWrapper>
   );

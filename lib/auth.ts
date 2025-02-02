@@ -62,9 +62,10 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
       const existingUser = await getUserID(user.id);
-      if (!existingUser || !existingUser.emailVerified) {
-        return false;
-      }
+      // if (!existingUser || !existingUser.emailVerified) {
+      //   return false;
+      // }
+      console.log(existingUser)
       return true;
     },
     async session({ token, session }) {

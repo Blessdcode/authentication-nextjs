@@ -22,6 +22,7 @@ import { signup } from "@/actions/sign-up";
 import { FormError } from "../custom/form-error";
 import { FormSuccess } from "../custom/form-success";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type IFormSubmit = {
   fullName: string;
@@ -34,6 +35,7 @@ type IFormSubmit = {
 const SignUp = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
+  const router = useRouter();
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -48,14 +50,25 @@ const SignUp = () => {
   const onSubmit = async (values: IFormSubmit) => {
     setError("");
     setSuccess("");
-    const results = await signup(values);
-    if (results.error) {
-      setError(results.error);
+    const response = await signup(values);
+    if (response.error) {
+      setError(response.error);
     } else {
-      setSuccess(results.success);
+      setSuccess(response.success);
       form.reset();
     }
-    console.log(results, "user data");
+    router.push("/auth/login");
+    console.log(response, "user data");
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google");
+      router.push("/dashboard")
+    } catch (error) {
+      setError("Google Sign-in failed");
+      console.log(error, "google sign-up error");
+    }
   };
 
   return (
@@ -157,7 +170,7 @@ const SignUp = () => {
           </Button>
         </form>
         <Button
-          onClick={() => signIn("google")}
+          onClick={handleGoogleSignIn}
           className="my-4 w-full bg-lightBlue hover:bg-darkBlue">
           Continue with Google{" "}
         </Button>
