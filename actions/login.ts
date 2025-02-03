@@ -1,3 +1,4 @@
+
 "use server";
 
 import { LoginSchema } from "@/schema";
@@ -31,10 +32,12 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       return { error: "Email is not valid" };
     }
     const verificationToken = await generateVerification(existingUser.email);
-    await sendVerificationEmail(
+   const sendEmailVerification = await sendVerificationEmail(
       verificationToken.email,
       verificationToken.token
     );
+    console.log(verificationToken, "verificationToken");
+    console.log(sendEmailVerification, "verificationEmail");
     return { success: "Confirmation email sent" };
   }
 

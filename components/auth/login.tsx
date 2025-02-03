@@ -22,9 +22,10 @@ import { login } from "@/actions/login";
 // import { signIn } from "@/auth";
 import { FormError } from "../custom/form-error";
 import { signIn } from "next-auth/react";
+import { FormSuccess } from "../custom/form-success";
 
 const Login = () => {
-  // const [success, setSuccess] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
 
   const form = useForm({
@@ -37,6 +38,7 @@ const Login = () => {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     setError("");
+    setSuccess("")
     const response = await login(data);
 
     if (response.error) {
@@ -46,8 +48,9 @@ const Login = () => {
         email: data.email,
         password: data.password,
         redirect: true,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/auth/verify-email",
       });
+      setSuccess(response.success);
     }
     console.log("data", response)
   };
@@ -96,6 +99,7 @@ const Login = () => {
               )}></FormField>
           </div>
           <FormError message={error} />
+          <FormSuccess message={success} />
           <Button type="submit" className="w-full  hover:bg-lightBlue">
             Login
           </Button>
