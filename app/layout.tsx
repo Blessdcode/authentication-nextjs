@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Saira_Condensed } from "next/font/google";
 import "./globals.css";
-import Provider from "./provider";
 
 const Saira = Saira_Condensed({
   subsets: ["latin"],
@@ -23,9 +22,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <Provider>
         <body className={`${Saira.className}`}>{children}</body>
-      </Provider>
     </html>
   );
 }

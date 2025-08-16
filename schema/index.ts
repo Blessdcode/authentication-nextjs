@@ -5,12 +5,12 @@ const USER = "user";
 
 export const SchemaSettings = z
   .object({
-    fullName: z.optional(z.string().trim()),
+    name: z.optional(z.string().trim()),
     userName: z.optional(z.string().trim()),
     email: z.optional(z.string().trim()),
-    password: z.optional(z.string().min(6).trim()),
-    confirmPassword: z.optional(z.string().min(6).trim()),
-    newPassword: z.optional(z.string().min(6).trim()),
+    password: z.optional(z.string().min(8).trim()),
+    confirmPassword: z.optional(z.string().min(8).trim()),
+    newPassword: z.optional(z.string().min(8).trim()),
     role: z.enum([ADMIN, USER]),
     isTwoFactorEnabled: z.optional(z.boolean()),
   })
@@ -55,7 +55,7 @@ export const SchemaSettings = z
   );
 
 export const SignUpSchema = z.object({
-  fullName: z.string().min(3, {
+  name: z.string().min(3, {
     message: "Name is required",
   }),
   userName: z.string().min(3, {
@@ -64,8 +64,8 @@ export const SignUpSchema = z.object({
   email: z.string().email({
     message: "Email is required",
   }),
-  password: z.string().min(6, {
-    message: "Minimum of 6 character required",
+  password: z.string().min(8, {
+    message: "Minimum of 8 character required",
   }),
   confirmPassword: z.string().min(6, {
     message: "Password must match",
@@ -79,12 +79,12 @@ export const LoginSchema = z.object({
   email: z.string().email({
     message: "Email is required",
   }),
-  password: z.string().min(6, {
+  password: z.string().min(8, {
     message: "Password is required",
   }),
   code: z.optional(
-    z.string().min(6, {
-      message: "Minimum of 6 characters",
+    z.string().min(4, {
+      message: "Minimum of 4 characters",
     })
   ),
 });
@@ -95,7 +95,7 @@ export const ResetSchema = z.object({
   }),
 });
 export const NewPasswordSchema = z.object({
-  password: z.string().min(6, {
-    message: "Minimum of 6 characters is required",
+  password: z.string().min(8, {
+    message: "Minimum of 8 characters is required",
   }),
 });

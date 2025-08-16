@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/router";
 // import * as z from "zod";
 // import { SignUpSchema } from "@/schema/signUpSchema";
 import { Input } from "../ui/input";
@@ -18,15 +20,15 @@ import {
 
 import { CardWrapper } from "./cardWrapper";
 import { LoginSchema } from "@/schema";
-import { login } from "@/actions/login";
-// import { signIn } from "@/auth";
 import { FormError } from "../custom/form-error";
 import { signIn } from "next-auth/react";
 import { FormSuccess } from "../custom/form-success";
+import { authClient } from "@/lib/auth.client";
 
 const Login = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [error, setError] = useState<string | undefined>("");
+  // const router = useRouter()
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -38,21 +40,22 @@ const Login = () => {
 
   const onSubmit = async (data: { email: string; password: string }) => {
     setError("");
-    setSuccess("")
-    const response = await login(data);
+    setSuccess("");
+    const response = await authClient.signIn.email(data);
 
     if (response.error) {
-      setError(response.error);
+      setError(response.error.message);
     } else {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: true,
-        callbackUrl: "/auth/verify-email",
+        callbackUrl: "/dashboard",
       });
-      setSuccess(response.success);
+      setSuccess("login successful!");
+      form.reset();
     }
-    console.log("data", response)
+    console.log("data", response);
   };
 
   return (

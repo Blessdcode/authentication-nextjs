@@ -1,11 +1,13 @@
-import Image from "next/image";
+interface headerProps {
+  label: string;
+  title: string;
+}
 
-export const Header = ({ label }: { label: string }) => {
+export const HeaderWrapper = ({ label, title }: headerProps) => {
   return (
     <div>
       <div className="flex items-center justify-center space-x-3 mb-4">
-        <Image src="/Logo.svg" width={ 40} height={40} alt="logo" />
-        <h1 className="text-4xl sm:text-5xl font-bold text-center">DropSaas</h1>
+        <h2 className="text-xl sm:text-2xl font-bold text-center">{title}</h2>
       </div>
       <p className="text-lg sm:text-xl text-center opacity-90">{label}</p>
     </div>
